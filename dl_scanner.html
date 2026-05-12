@@ -13,7 +13,6 @@
     --border:  #2a2a2a;
     --gold:    #c9a84c;
     --gold-dim:#7a6228;
-    --red:     #c0392b;
     --text:    #e8e8e8;
     --muted:   #666;
     --radius:  6px;
@@ -62,13 +61,6 @@
     margin-top: 48px;
     padding: 0 20px;
   }
-  .step-label {
-    font-size: 10px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--gold-dim);
-    margin-bottom: 8px;
-  }
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -89,112 +81,6 @@
     line-height: 1.6;
     margin-bottom: 24px;
   }
-
-  /* ── Scan button: styled div + invisible file input on top ── */
-  .scan-btn-wrap {
-    position: relative;
-    width: 100%;
-    height: 70px;
-    border-radius: var(--radius);
-    overflow: hidden;
-  }
-  .scan-btn-face {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    border: 2px solid var(--gold);
-    border-radius: var(--radius);
-    color: var(--gold);
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 20px;
-    letter-spacing: 3px;
-    background: transparent;
-    transition: background 0.15s, color 0.15s;
-    pointer-events: none;
-  }
-  .scan-btn-wrap input[type="file"] {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-    margin: 0;
-    padding: 0;
-    font-size: 16px; /* prevents iOS zoom */
-  }
-  .scan-btn-wrap:active .scan-btn-face {
-    background: var(--gold);
-    color: var(--black);
-  }
-
-  #previewWrap { display: none; margin-top: 20px; text-align: center; }
-  #previewImg {
-    max-width: 100%;
-    max-height: 220px;
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    object-fit: contain;
-  }
-  #retakeBtn {
-    display: inline-block;
-    margin-top: 10px;
-    background: none;
-    border: none;
-    color: var(--muted);
-    font-size: 12px;
-    letter-spacing: 1px;
-    cursor: pointer;
-    text-transform: uppercase;
-    text-decoration: underline;
-  }
-  #processBtn {
-    display: none;
-    width: 100%;
-    margin-top: 18px;
-    background: var(--gold);
-    color: var(--black);
-    border: none;
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 18px;
-    letter-spacing: 3px;
-    padding: 16px;
-    border-radius: var(--radius);
-    cursor: pointer;
-  }
-  #processBtn:disabled { opacity: 0.4; cursor: not-allowed; }
-  #status {
-    display: none;
-    align-items: center;
-    gap: 10px;
-    margin-top: 16px;
-    font-size: 13px;
-    color: var(--muted);
-  }
-  .spinner {
-    width: 18px; height: 18px;
-    border: 2px solid var(--border);
-    border-top-color: var(--gold);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    flex-shrink: 0;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  #errorMsg {
-    display: none;
-    background: rgba(192,57,43,0.12);
-    border: 1px solid var(--red);
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    font-size: 13px;
-    color: #e07060;
-    margin-top: 14px;
-  }
-
-  #resultsCard { display: none; }
   .field-group { margin-bottom: 16px; }
   .field-group label {
     display: block;
@@ -209,27 +95,18 @@
     background: var(--black);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 10px 14px;
+    padding: 12px 14px;
     color: var(--text);
     font-family: 'Barlow', sans-serif;
-    font-size: 16px; /* prevents iOS zoom */
+    font-size: 16px;
     outline: none;
     transition: border-color 0.15s;
   }
   .field-group input:focus { border-color: var(--gold); }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .notice {
-    background: rgba(201,168,76,0.08);
-    border: 1px solid var(--gold-dim);
-    border-radius: var(--radius);
-    padding: 12px 16px;
-    font-size: 12px;
-    color: var(--muted);
-    margin-bottom: 20px;
-    line-height: 1.5;
-  }
   #continueBtn {
     width: 100%;
+    margin-top: 8px;
     background: var(--gold);
     color: var(--black);
     border: none;
@@ -239,7 +116,9 @@
     padding: 18px;
     border-radius: var(--radius);
     cursor: pointer;
+    transition: opacity 0.2s;
   }
+  #continueBtn:hover { opacity: 0.88; }
   .skip-wrap { text-align: center; margin-top: 16px; }
   .skip-wrap a {
     color: var(--muted);
@@ -248,6 +127,7 @@
     text-transform: uppercase;
     text-decoration: none;
   }
+  .skip-wrap a:hover { color: var(--text); }
 </style>
 </head>
 <body>
@@ -261,58 +141,30 @@
 </header>
 
 <main>
-
-  <div class="step-label">Step 1 of 2</div>
   <div class="card">
-    <h2>Scan Your Driver's License</h2>
-    <p>Take a photo of your ID and we'll fill in your information automatically.</p>
-
-    <div class="scan-btn-wrap" id="scanBtnWrap">
-      <div class="scan-btn-face">📷 &nbsp; Scan Driver's License</div>
-      <input type="file" accept="image/*" id="fileInput" onchange="handleFile(event)">
-    </div>
-
-    <div id="previewWrap">
-      <img id="previewImg" src="" alt="ID Preview">
-      <br>
-      <button id="retakeBtn" onclick="retake()">↺ Retake</button>
-    </div>
-
-    <button id="processBtn" onclick="processImage()">Extract Information →</button>
-
-    <div id="status">
-      <div class="spinner"></div>
-      <span id="statusText">Reading your ID…</span>
-    </div>
-
-    <div id="errorMsg"></div>
-  </div>
-
-  <div id="resultsCard" class="card">
-    <h2>Confirm Your Information</h2>
-    <p>Review and correct anything, then continue to the consent form.</p>
-    <div class="notice">✦ Your photo is not stored — used only to read your information.</div>
+    <h2>Client Check-In</h2>
+    <p>Enter the client's information from their ID, then tap Continue to open the consent form with their details pre-filled.</p>
 
     <div class="field-group">
       <label>Full Name</label>
-      <input type="text" id="fName" placeholder="First Last" autocomplete="name">
+      <input type="text" id="fName" placeholder="First Last" autocomplete="off">
     </div>
     <div class="field-group">
       <label>Address</label>
-      <input type="text" id="fAddress" placeholder="123 Main St" autocomplete="street-address">
+      <input type="text" id="fAddress" placeholder="123 Main St" autocomplete="off">
     </div>
     <div class="field-group">
       <label>City, State and ZIP</label>
-      <input type="text" id="fCityStateZip" placeholder="Houma, LA 70360">
+      <input type="text" id="fCityStateZip" placeholder="Houma, LA 70360" autocomplete="off">
     </div>
     <div class="field-row">
       <div class="field-group">
         <label>Phone</label>
-        <input type="tel" id="fPhone" placeholder="(985) 000-0000" autocomplete="tel">
+        <input type="tel" id="fPhone" placeholder="(985) 000-0000" autocomplete="off">
       </div>
       <div class="field-group">
         <label>Email</label>
-        <input type="email" id="fEmail" placeholder="you@email.com" autocomplete="email">
+        <input type="email" id="fEmail" placeholder="you@email.com" autocomplete="off">
       </div>
     </div>
 
@@ -320,9 +172,8 @@
   </div>
 
   <div class="skip-wrap">
-    <a href="#" onclick="skipToForm(); return false;">Skip — fill out form manually</a>
+    <a href="#" onclick="skipToForm(); return false;">Skip — open blank consent form</a>
   </div>
-
 </main>
 
 <script>
@@ -339,86 +190,6 @@ const ENTRY = {
 };
 // ══════════════════════════════════════════════════════
 
-let capturedBase64 = null;
-
-function handleFile(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = function(ev) {
-    const dataUrl = ev.target.result;
-    capturedBase64 = dataUrl.split(',')[1];
-    document.getElementById('previewImg').src = dataUrl;
-    document.getElementById('previewWrap').style.display = 'block';
-    document.getElementById('scanBtnWrap').style.display = 'none';
-    document.getElementById('processBtn').style.display  = 'block';
-    hideError();
-  };
-  reader.readAsDataURL(file);
-}
-
-function retake() {
-  capturedBase64 = null;
-  document.getElementById('previewWrap').style.display  = 'none';
-  document.getElementById('processBtn').style.display   = 'none';
-  document.getElementById('scanBtnWrap').style.display  = 'block';
-  document.getElementById('resultsCard').style.display  = 'none';
-  document.getElementById('fileInput').value = '';
-  hideError();
-}
-
-async function processImage() {
-  if (!capturedBase64) return;
-  document.getElementById('processBtn').disabled = true;
-  setStatus(true, 'Reading your ID…');
-  hideError();
-
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: 'You are a driver\'s license OCR assistant. Return ONLY a valid JSON object with no markdown or explanation. Keys: firstName, lastName, address, city, state, zip, dateOfBirth, licenseNumber, expirationDate. Use empty string for unreadable fields.',
-        messages: [{
-          role: 'user',
-          content: [
-            { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: capturedBase64 } },
-            { type: 'text', text: "Extract the information from this driver's license." }
-          ]
-        }]
-      })
-    });
-
-    if (!resp.ok) {
-      const err = await resp.json().catch(function() { return {}; });
-      throw new Error(err.error ? err.error.message : 'API error ' + resp.status);
-    }
-
-    const data  = await resp.json();
-    const raw   = (data.content.find(function(b) { return b.type === 'text'; }) || {}).text || '{}';
-    const clean = raw.replace(/```json|```/g, '').trim();
-    const dl    = JSON.parse(clean);
-
-    document.getElementById('fName').value        = [dl.firstName, dl.lastName].filter(Boolean).join(' ');
-    document.getElementById('fAddress').value     = dl.address || '';
-    document.getElementById('fCityStateZip').value = [dl.city, dl.state, dl.zip].filter(Boolean).join(', ');
-    document.getElementById('fPhone').value       = '';
-    document.getElementById('fEmail').value       = '';
-
-    setStatus(false);
-    document.getElementById('resultsCard').style.display = 'block';
-    document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-  } catch(err) {
-    setStatus(false);
-    showError('Could not read the ID: ' + err.message + '. Please try again or fill the form manually.');
-  }
-
-  document.getElementById('processBtn').disabled = false;
-}
-
 function openForm() {
   var params = new URLSearchParams();
   function v(id) { return document.getElementById(id).value.trim(); }
@@ -427,22 +198,11 @@ function openForm() {
   if (v('fCityStateZip')) params.set(ENTRY.cityStateZip, v('fCityStateZip'));
   if (v('fPhone'))        params.set(ENTRY.phone,        v('fPhone'));
   if (v('fEmail'))        params.set(ENTRY.email,        v('fEmail'));
-  var qs  = params.toString();
+  var qs = params.toString();
   window.open(FORM_BASE_URL + (qs ? '?' + qs : ''), '_blank');
 }
 
 function skipToForm() { window.open(FORM_BASE_URL, '_blank'); }
-
-function setStatus(show, text) {
-  document.getElementById('status').style.display = show ? 'flex' : 'none';
-  if (text) document.getElementById('statusText').textContent = text;
-}
-function showError(msg) {
-  var el = document.getElementById('errorMsg');
-  el.textContent = msg;
-  el.style.display = 'block';
-}
-function hideError() { document.getElementById('errorMsg').style.display = 'none'; }
 </script>
 
 </body>
